@@ -12,7 +12,7 @@ Last modified:   Oct 30, 2023, 5:38:26 AM UTC+5:30
 
 # Exploratory Data Analysis with Insights
 ## 1. Top Crimes by their no. of times happpend.
-```
+``` sql
 SELECT description Crime, count(description) as Crime_reported
 FROM `bigquery-public-data.austin_crime.crime` 
 group by 1
@@ -24,7 +24,7 @@ limit 20;
 Burglary and Theft are the major crimes happened all time, which is 90% more than of all Crimes_reported.
 
 ## 2. Top Crimes by clearance_status (not Cleared)
-'''
+``` sql
 with ct as
 (SELECT description, clearance_status, count(description) as cnt
 FROM `bigquery-public-data.austin_crime.crime` 
@@ -37,7 +37,7 @@ sum(cnt) for clearance_status IN ( 'Not cleared', 'Cleared by Arrest', 'Cleared 
 )
 order by 2 desc
 limit 15;
-'''
+```
 ![image](https://github.com/mustafaCLI/Austine-Crime-Analysis-in-Bigquery-SQL-/assets/121651184/5d457cb7-a463-40f4-8334-64a7441c2537)
 ## Insight:
 It seems clearly more than 60% cases are pending or not solved for all.
@@ -72,7 +72,7 @@ limit 20;
 ![image](https://github.com/mustafaCLI/Austine-Crime-Analysis-in-Bigquery-SQL-/assets/121651184/2edb7037-26e5-4b46-932e-c7f62e49c50e)
 ## Insight:
 Clearly seen more than 80% of crimes are not solved yet, amongst max are related to theft description.
-## Q4. Top 10 Crimes description by % which are not cleared yet.
+## Q4. Top 10 Crimes description by % of total which are not cleared yet.
 ``` sql
 select t2.description, t2.All_Crime_reported,  
 concat(round(((t1.not_cleared) * 100)/(t2.All_Crime_reported),2),"%") as not_clreared,
@@ -101,7 +101,7 @@ limit 10;
 ## Insight:
 Again theft related crimes are in top 10 which are not cleared. Means more than 90% of top cases/ crimes are pending. 
 
-## Q5. Top 10 Crimes description by % which have been cleared.
+## Q5. Top 10 Crimes description by % of total which have been cleared.
 ``` sql
 create view `secure-current-398713.my_dataset.mv` as
     (select t2.description, t2.All_Crime_reported,  
@@ -125,14 +125,47 @@ create view `secure-current-398713.my_dataset.mv` as
       on t1.description =  t2.description
       order by clreared_by_arrest desc);
 
-  select description, All_Crime_reported,  concat(clreared_by_arrest,"%") as Cleared_per from `secure-current-398713.my_dataset.mv`
+  select description, All_Crime_reported,  concat(clreared_by_arrest,"%") as Cleared_by_Arest from
+`secure-current-398713.my_dataset.mv`
 limit 10;
 
 ```
-![image](https://github.com/mustafaCLI/Austine-Crime-Analysis-in-Bigquery-SQL-/assets/121651184/c10e0905-83f4-4751-ad1a-b88a9443ca8a)
+![image](https://github.com/mustafaCLI/Austine-Crime-Analysis-in-Bigquery-SQL-/assets/121651184/0d5ad0e8-8844-4d07-a7b6-629e75166d59)
+
 
 ## Insight:
-Clearly can be seen child ASSAULT and murder related are the top 10 crimes, which have been cleared_by_arrest.
+Clearly can be seen child ASSAULT and murder related are the top 10 crimes, which have been Cleared_by_Arrest.
+
+## Q6. Total Crimes by Year on Year trends.
+  ``` sql
+  select year, count(description) as Total_crimes
+  from `bigquery-public-data.austin_crime.crime` 
+  group by 1
+  order by 1 asc;
+```
+![image](https://github.com/mustafaCLI/Austine-Crime-Analysis-in-Bigquery-SQL-/assets/121651184/3c4c941a-da66-471e-b374-22b06c1970c2)
+
+## Insight:
+Clearly can be seen Crimes are slightly decreased over Years, from 2014 to 2015 crimes declined by 5% and from 2015 to 2016 by 3%.
+## Q7. Total Crimes by primary_type and Year trends as 2nd dimension.
+  ``` sql
+  select * from
+  (select primary_type, year, count(description) as Total_crimes
+  from `bigquery-public-data.austin_crime.crime` 
+  group by 1, 2)
+  pivot(
+    sum(Total_crimes) as Crimes_in for year in (2014, 2015, 2016)
+  )
+  order by 2 desc
+  limit 15;
+```
+![image](https://github.com/mustafaCLI/Austine-Crime-Analysis-in-Bigquery-SQL-/assets/121651184/eb4922d4-3534-47dd-9e19-163363f81a8c)
+## Insight:
+As we known crimes are declined YoY, but amongst all primary_type: Theft & Roberry increased over next years, Rape also increased a bit from 2015-2016. Moreover, Burglary, Theft BOV, Theft: Pocket Picking, Theft: Auto Parts are the top crimes have been stoped completly over next years. 
+
+
+
+
 
 
 
