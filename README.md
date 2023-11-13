@@ -1,5 +1,9 @@
 # Austine-Crime-Analysis-in-BigQuery-SQL-
 Austine Crime Analysis in Google BigQuery with Inbuilt SQL flavor.
+# Overview
+Crimes plays important roles in cities of the country. Their rates decide whether cities are 100% secure (0 crimes) or safe for the humans in terms of murders, theft etc.
+Especially for the woaman, as we know Sexual assaultment is the common big crime, so every woman wants to live without fear or trouble. It dosen't matter she is married or unmarried.
+In this project, I have presented key insights by analyzing the "Austine-Crime" public data set as EDA (Exploratory data analysis). I hope you'll find it more helpfull for your project too.
 
 # Data Source & Table info
 Data Source:     BigQuery Public Data
